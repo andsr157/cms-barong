@@ -1,0 +1,47 @@
+{
+  "name": "nuxt-app",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "nuxt build",
+    "dev": "nuxt dev",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "vercel-build": "prisma generate && prisma migrate deploy && nuxt build",
+    "postinstall": "nuxt prepare"
+  },
+  "dependencies": {
+    "@nuxt/image": "^1.7.0",
+    "@nuxt/ui": "^2.15.2",
+    "@prisma/client": "^5.13.0",
+    "@supabase/supabase-js": "^2.42.5",
+    "@types/bcrypt": "^5.0.2",
+    "apexcharts": "^3.49.1",
+    "axios": "^1.6.8",
+    "bcrypt": "^5.1.1",
+    "date-fns": "^3.6.0",
+    "jspdf": "^2.5.1",
+    "nuxt": "^3.11.2",
+    "nuxt-rating": "^0.0.15",
+    "postcss-custom-properties": "^13.3.8",
+    "uuid": "^9.0.1",
+    "v-calendar": "^3.1.2",
+    "vee-validate": "^4.12.6",
+    "vue": "^3.4.21",
+    "vue-animated-counter": "^0.3.0",
+    "vue-carousel": "^0.18.0",
+    "vue-router": "^4.3.0",
+    "vue3-apexcharts": "^1.5.3",
+    "vue3-countup": "^0.0.4",
+    "yup": "^1.4.0"
+  },
+  "devDependencies": {
+    "@nuxtjs/supabase": "^1.2.2",
+    "@types/uuid": "^9.0.8",
+    "autoprefixer": "^10.4.19",
+    "nuxt-icon": "^0.6.10",
+    "postcss": "^8.4.38",
+    "prisma": "^5.13.0",
+    "tailwindcss": "^3.4.3"
+  }
+}

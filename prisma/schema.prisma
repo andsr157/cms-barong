@@ -1,0 +1,163 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model users {
+  id                String              @id @default(cuid())
+  name              String
+  email             String              @unique
+  telp              String
+  avatar            String
+  password          String
+  role              String
+  created_at        DateTime            @default(now())
+  updated_at        DateTime?           @default(now())
+  pushSubscriptions PushSubscription?
+  address           address[]
+  serviceFee        serviceFee[]
+  ReferredToUser    transaction[]       @relation("Partner")
+  ReferrerToUser    transaction[]       @relation("User")
+  userNotifications user_notification[]
+}
+
+model address {
+  id           String  @id @default(cuid())
+  label        String?
+  address_name String
+  detail       String?
+  owner_name   String?
+  owner_telp   String?
+  latitude     String?
+  longitude    String?
+  user_id      String
+  is_main      Boolean
+  user         users   @relation(fields: [user_id], references: [id])
+}
+
+model trashCategory {
+  id          String  @id
+  name        String
+  subcategory trash[]
+}
+
+model trashUnit {
+  id   String  @id
+  name String
+  trash trash[]
+}
+model trash {
+  id                 String               @id
+  name               String
+  minPrice           Int
+  maxPrice           Int
+  category_id        String
+  unit_id            String
+  transaction_detail transaction_detail[]
+  category           trashCategory        @relation(fields: [category_id], references: [id])
+  unit           trashUnit        @relation(fields: [unit_id], references: [id])
+}
+
+model status {
+  id          String        @id
+  name        String
+  label       String
+  status      String
+  transaction transaction[]
+}
+
+model transaction {
+  id                 String               @id @default(cuid())
+  user_id            String
+  partner_id         String?
+  image              String
+  status_id          String
+  partner_rate       Int?
+  partner_review     String?
+  note               String
+  total              Int?
+  address            String
+  chats_id           String?
+  created_at         DateTime             @default(now())
+  updated_at         DateTime             @unique @default(now())
+  partner            users?               @relation("Partner", fields: [partner_id], references: [id])
+  status             status               @relation(fields: [status_id], references: [id])
+  user               users                @relation("User", fields: [user_id], references: [id])
+  transaction_detail transaction_detail[]
+}
+
+model transaction_detail {
+  id             String      @id @default(cuid())
+  transaction_id String
+  trash_id       String
+  price          Int?
+  weight         Int
+  transaction    transaction @relation(fields: [transaction_id], references: [id])
+  trash          trash       @relation(fields: [trash_id], references: [id])
+}
+
+model chats {
+  id         String     @id @default(cuid())
+  user_id    String
+  partner_id String?
+  created_at DateTime   @default(now())
+  messages   messages[]
+}
+
+model messages {
+  id         String   @id @default(cuid())
+  chats_id   String
+  sender_id  String
+  content    String
+  created_at DateTime @default(now())
+  chats      chats    @relation(fields: [chats_id], references: [id])
+}
+
+model serviceFee {
+  id         String    @id @default(cuid())
+  partner_id String
+  totalFee   Int
+  lackOfFee  Int
+  created_at DateTime  @default(now())
+  updated_at DateTime? @default(now())
+  users      users     @relation(fields: [partner_id], references: [id])
+}
+
+model PushSubscription {
+  id           Int      @id @default(autoincrement())
+  user_id      String   @unique
+  subscription Json
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @default(now()) @updatedAt
+  user         users    @relation(fields: [user_id], references: [id])
+}
+
+model notification {
+  id                Int                 @id @default(autoincrement())
+  title             String
+  description       String
+  createdAt         DateTime            @default(now())
+  userNotifications user_notification[]
+}
+
+model user_notification {
+  id             String           @id @default(cuid())
+  user_id        String
+  notificationId Int
+  link           String?
+  mode           NotificationMode
+  isRead         Boolean          @default(false)
+  createdAt      DateTime         @unique @default(now())
+  notification   notification     @relation(fields: [notificationId], references: [id])
+  user           users            @relation(fields: [user_id], references: [id])
+}
+
+enum NotificationMode {
+  PUSH
+  IN_APP
+}
+
